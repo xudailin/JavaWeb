@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+    "http://struts.apache.org/dtds/struts-2.1.dtd"
+    >
+
+<struts>
+	<package name="pak" namespace="" extends="json-default">
+		<action name="admin" class="admin">
+		    <result name="loginSuccess">/main.jsp</result>
+			<result name="loginFailure">/error.jsp</result>
+			<result name="registSuccess">/login.jsp</result>
+			<result name="registFailure">/error.jsp</result>
+			<result name="editPasswordSuccess">/welcome.jsp</result>
+			<result name="editPasswordFailure">/editPassword.jsp</result>
+		</action>
+		
+		<action name="provider" class="provider">
+		    <result name="providerManageSuccess">/providerManage.jsp</result>
+			<result name="queryProvidersSuccess">/providerManage.jsp</result>
+			<result name="addProviderSuccess" type="redirect">/pak/provider!getAllProviders.action</result>
+			<result name="preUpdateProviderSuccess">/editProvider.jsp</result>
+			<result name="updateProviderSuccess" type="redirect">/pak/provider!getAllProviders.action</result>
+			<result name="deleteProviderSuccess" type="redirect">/pak/provider!getAllProviders.action</result>
+			<result name="deleteProviderFailure" type="redirect">/pak/provider!getAllProviders.action</result>
+		</action>
+		
+		<action name="product" class="product"> 
+			<result name="productManageSuccess">/productManage.jsp</result>
+			<result name="preProductInSuccess">/inSto.jsp</result>		
+			<result name="preProductOutSuccess">/outSto.jsp</result>
+			<result name="productInSuccess" type="redirect">/pak/product!showAllProduct.action</result>
+			<result name="productOutSuccess" type="redirect">/pak/product!showAllProduct.action</result>
+			<result name="queryProviderSuccess">/showProviders.jsp</result>		
+		    <result name="addProductSuccess" type="redirect">/pak/product!showAllProduct.action</result>
+		    <result name="deleteProductSuccess" type="redirect">/pak/product!showAllProduct.action</result>
+		    <result name="deleteProductFailure" type="redirect">/pak/product!showAllProduct.action</result>
+		</action>
+		
+		<action name="inOrder" class="inOrder">
+			<result name="queryInOrderSuccess">/showInOrder.jsp</result>
+			<result name="deleteInOrderSuccess" type="redirect">/pak/inOrder!getAllInOrder.action</result>
+			<result name="deleteInOrderFailure" type="redirect">/pak/inOrder!getAllInOrder.action</result>
+		    <result name="queryInOrderFailure" type="redirect">/pak/inOrder!getAllInOrder.action?page=${page}</result>
+		</action>
+		
+		<action name="outOrder" class="outOrder">
+			<result name="queryOutOrderSuccess">/showOutOrder.jsp</result>
+			<result name="deleteOutOrderSuccess" type="redirect">/pak/outOrder!getAllOutOrder.action</result>
+			<result name="deleteOutOrderFailure" type="redirect">/pak/outOrder!getAllOutOrder.action</result>
+		    <result name="queryOutOrderFailure" type="redirect">/pak/outOrder!getAllOutOrder.action?page=${page}</result>
+		</action>
+	</package>
+	
+</struts>
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.PictureDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="Picture" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="imgUrl" property="imgUrl"/>
+		<result column="creatDate" property="creatDate" jdbcType="TIMESTAMP"/>
+		<result column="type_id" property="type_id"/>
+		<result column="user_id" property="user_id"/>
+		<association property="pictrueType" javaType="PictrueType">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="typename" property="typename"/>
+		</association>
+		<association property="user" javaType="User">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+		</association>
+	</resultMap>
+	
+	<select id="findPictureList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select *
+		from sys_pic_view v 
+		left join sys_pic_type t on v.type_id=t.id 
+		left join sys_user u on v.user_id=u.id 
+		where v.user_id=#{id} order by v.creatDate desc
+	</select>
+
+</mapper>
+

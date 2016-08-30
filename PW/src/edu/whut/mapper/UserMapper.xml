@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.UserDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="User" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="BIGINT"/>
+		<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="emailpwd" property="emailpwd" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="TINYINT" />
+		<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+		<result column="marriage" property="marriage" jdbcType="TINYINT" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="profession" property="profession" jdbcType="VARCHAR" />
+		<result column="presentaddress" property="presentaddress" jdbcType="VARCHAR" />
+		<result column="hometown" property="hometown" jdbcType="VARCHAR" />
+		<result column="experience" property="experience" jdbcType="VARCHAR" />
+		<result column="introduce" property="introduce" jdbcType="VARCHAR" />
+		<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="followers" property="followers" jdbcType="INTEGER" />
+		<result column="following" property="following" jdbcType="INTEGER" />
+		<result column="posts" property="posts" jdbcType="INTEGER" />
+		<result column="front_url" property="front_url" jdbcType="VARCHAR" />
+		<collection property="blogs" ofType="Blog">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="content" property="content"/>
+			<result column="publishtime" property="publishtime" jdbcType="TIMESTAMP"/>
+			<result column="readtimes" property="readtimes" jdbcType="INTEGER"/>
+			<result column="user_id" property="user_id" jdbcType="BIGINT"/>
+			<result column="type_id" property="type_id" jdbcType="BIGINT"/>	
+		</collection>
+		<collection property="messages" ofType="BlogMessage">
+			<id property="id" column="id" jdbcType="BIGINT"/>
+			<result property="leaver_id" column="leaver_id" jdbcType="BIGINT"/>
+			<result property="receiver_id" column="receiver_id" jdbcType="BIGINT"/>
+			<result property="mcontent" column="mcontent"/>
+			<result property="writetime" column="writetime" jdbcType="TIMESTAMP"/>
+			<result property="state" column="state" jdbcType="TINYINT"/>
+			<result property="root_id" column="root_id" jdbcType="BIGINT"/>
+			<result property="super_id" column="super_id" jdbcType="BIGINT"/>
+		</collection>
+		
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+    id, loginname, password, createdate , nickname ,email , emailpwd, sex , birthday , marriage , phone , profession , presentaddress , hometown , experience , introduce , headimgurl , status , followers , following ,posts ,front_url
+  	</sql>
+	
+	<select id="findUserByLoginName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select u.* from sys_user u where u.loginname = #{username}
+    </select>
+    
+    <select id="findUserByFrontUrl" resultMap="BaseResultMap" parameterType="java.lang.String">
+    	select u.* from sys_user u where  u.front_url LIKE CONCAT(CONCAT('%', #{front_url}), '%')
+    </select>
+    
+    <select id="findUserById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select u.* from sys_user u where u.id=#{id}
+    </select>
+    
+    <insert id="insertUser" parameterType="User">
+    	insert into sys_user(
+    	<include refid="Base_Column_List"/>
+    	) values(#{id}, #{loginname}, #{password}, #{createdate} , #{nickname}, #{email} , #{emailpwd} ,#{sex} , #{birthday} , #{marriage} , #{phone} , #{profession} , #{presentaddress} , #{hometown} , #{experience} , #{introduce} , #{headimgurl} , #{status} , #{followers} , #{following} ,#{posts},#{front_url});
+    </insert>
+    
+    <update id="updateUser" parameterType="User">
+    	update sys_user set nickname=#{nickname} , email=#{email} , experience=#{experience} , introduce=#{introduce} , front_url=#{front_url}
+    	<if test="password != ''">		
+            , password= #{password}
+        </if>
+        where id=#{id}
+    </update>
+    
+    
+
+</mapper>

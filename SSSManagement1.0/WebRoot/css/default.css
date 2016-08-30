@@ -1,0 +1,90 @@
+/* CSS Document */
+#bar {
+	display: block;
+	margin: 10px;
+	background: url("../images/main_47.gif") repeat-x;
+}
+
+#search {
+	width: 100%;
+	margin-left: 20px;
+}
+
+#senfe {
+	width: 99%;
+	border-top: #000 1px solid;
+	border-left: #000 1px solid;
+}
+
+#senfe td {
+	border-right: #000 1px solid;
+	border-bottom: #000 1px solid;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+}
+
+#addTab {
+	margin-left: 200px;
+	table-layout: fixed;
+	width: 600px;
+}
+
+.STYLE5 {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.STYLE6 {
+	font-size: 12px;
+	color: #006600;
+}
+
+.STYLE11 {
+	color: #FF0000
+}
+
+.STYLE12 {
+	color: #003300;
+	font-weight: bold;
+}
+
+.STYLE13 {
+	font-size: 12px;
+	color: #003300;
+	margin-left: 1120px;
+}
+
+.STYLE14 {
+	font-size: 12px;
+	color: #006600;
+	font-weight: bold;
+}
+
+.STYLE15 {
+	font-size: 12px;
+}
+
+.STYLE16 {
+	font-size: 12px;
+	color: #003300;
+	margin-left: 340px;
+}
+
+.STYLE17 {
+	font-size: 12px;
+	color: #003300;
+	margin-left: 430px;
+}
+
+.STYLE18 {
+	font-size: 12px;
+	color: #003300;
+	margin-left: 320px;
+}
+
+.STYLE19 {
+	font-size: 12px;
+	color: #003300;
+	margin-left: 452px;
+}

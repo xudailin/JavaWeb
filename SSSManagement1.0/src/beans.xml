@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+           
+           <context:annotation-config />
+           <context:component-scan base-package="com.wtu.sss" />
+           
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+	<bean id="dataSource" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+	</bean>
+
+	<!--AnnotationSessionFactoryBean提供一种注解的方式来映射，它可以依赖@注解通过实体类生成表（包括字段、主键）, 
+		LocalSessionFactoryBean在applicationContext.xml中配置之后，需要另外一个***.hbm.xml的配置文件对实体和表的具体映射进行配置 -->
+	
+	<bean id="mySessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.wtu.sss.model</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hbm2ddl.auto">update</prop>
+				<prop key="connection.autocommit">true</prop> 
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="mySessionFactory"></property>
+	</bean>
+	
+	<!-- 定义事务管理器（声明式的事务） --> 
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="*" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <aop:config>
+        <aop:pointcut id="interceptorPointCuts"
+            expression="execution(* com.wtu.sss.dao.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice"
+            pointcut-ref="interceptorPointCuts" />       
+    </aop:config>     
+	
+</beans>

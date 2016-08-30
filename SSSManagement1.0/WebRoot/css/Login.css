@@ -1,0 +1,68 @@
+/* CSS Document */
+
+
+#Up{
+     background:url(../images/Login/login_04.gif) no-repeat;
+	 height:266px;
+	 width:862px;
+}
+
+#Center{
+	 height:79px;
+	 width:862px;
+}
+
+#Center_left{
+     float:left;
+	 height:95px;
+	 width:71%;
+}
+
+#Center_left_1{
+     float:left;
+     background:url(../images/Login/login_06.gif) no-repeat;
+	 height:95px;
+	 width:69%;
+}
+
+#Center_left_2{
+     float:right;
+     background:url(../images/Login/login_07.gif);
+	 height:95px;
+	 width:31%;
+}
+
+#Center_right{
+     float:right;
+     background:url(../images/Login/login_08.gif) no-repeat right;
+	 height:95px;
+	 width:29%; 
+}
+
+
+#Down{
+     background:url(../images/Login/login_09.gif) no-repeat;
+	 height:200px;
+	 width:862px;
+}
+
+#post{
+     background:url(../images/tabbg1.gif);
+	 height:18px;
+	 width:43px;
+}
+.STYLE2 {
+	font-size: 10px;
+	color: #669933;
+	margin-left: 400px;
+}
+.STYLE3 {font-size: 12px}
+.STYLE6 {color: #669900}
+.STYLE8 {color: #669933}
+.STYLE11 {color: #006600}
+.STYLE12 {color: #009900}
+
+
+
+
+

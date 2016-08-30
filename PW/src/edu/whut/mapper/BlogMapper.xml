@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="Blog" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="publishtime" property="publishtime" jdbcType="TIMESTAMP"/>
+		<result column="readtimes" property="readtimes" jdbcType="INTEGER"/>
+		<result column="comNum" property="comNum" jdbcType="INTEGER"/>
+		<result column="collectNum" property="collectNum" jdbcType="INTEGER"/>
+		<result column="user_id" property="user_id" jdbcType="BIGINT"/>
+		<result column="type_id" property="type_id" jdbcType="BIGINT"/>	
+		<association property="user" javaType="User" >
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+			<result column="password" property="password" jdbcType="VARCHAR" />
+			<result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="emailpwd" property="emailpwd" jdbcType="VARCHAR" />
+			<result column="sex" property="sex" jdbcType="TINYINT" />
+			<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+			<result column="marriage" property="marriage" jdbcType="TINYINT" />
+			<result column="phone" property="phone" jdbcType="VARCHAR" />
+			<result column="profession" property="profession" jdbcType="VARCHAR" />
+			<result column="presentaddress" property="presentaddress" jdbcType="VARCHAR" />
+			<result column="hometown" property="hometown" jdbcType="VARCHAR" />
+			<result column="experience" property="experience" jdbcType="VARCHAR" />
+			<result column="introduce" property="introduce" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+			<result column="followers" property="followers" jdbcType="INTEGER" />
+			<result column="following" property="following" jdbcType="INTEGER" />
+			<result column="posts" property="posts" jdbcType="INTEGER" />
+		</association>
+		<association property="blogType" javaType="BlogType" >
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="typename" property="typename" jdbcType="VARCHAR"/>	
+		</association>
+	</resultMap>
+	<select id="findPageBlogList" resultMap="BaseResultMap" parameterType="edu.whut.util.PageInfo">
+		select *
+		from sys_blog b 
+		left join sys_user u on b.user_id=u.id 
+		left join sys_blog_type t on b.type_id=t.id
+		where b.user_id=#{condition.id} order by b.publishtime desc
+		LIMIT #{from}, #{size}
+	</select>
+	<select id="getBlogById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select * 
+		from sys_blog b,sys_user u,sys_blog_type t 
+		where b.user_id=u.id and b.type_id=t.id and b.id=#{id}
+	</select>
+	<select id="findBlogCount" resultType="Integer" parameterType="edu.whut.util.PageInfo">
+		select count(*)
+		from sys_blog b 
+		left join sys_user u on b.user_id=u.id 
+		left join sys_blog_type t on b.type_id=t.id
+		where b.user_id=#{condition.id}
+	</select>
+	<insert id="insertBlog" parameterType="Blog">
+		insert into 
+		sys_blog(id,user_id,title,content,publishtime,readtimes,comNum,collectNum,type_id) 
+		values(#{id},#{user.id},#{title},#{content},#{publishtime},#{readtimes},#{comNum},#{collectNum},#{blogType.id})
+	</insert>
+	<delete id="deleteBlogById" parameterType="java.lang.Long">
+		delete from
+		sys_blog where id=#{id}
+	</delete>
+	<update id="updateBlog" parameterType="Blog">
+		update sys_blog 
+		set title=#{title},content=#{content}, publishtime=#{publishtime}, type_id=#{type_id} 
+		where id=#{id}
+	</update>
+	<update id="updateBlogComNum" parameterType="Blog">
+		update sys_blog 
+		set comNum=#{comNum}
+		where id=#{id}
+	</update>
+	<select id="findBlogCommentCount" parameterType="Blog" resultType="Integer">
+		select count(*)
+		from sys_blog_comment c 
+		where c.blog_id=#{id} and c.commenter_id!=#{user_id}
+	</select>
+
+</mapper>
+

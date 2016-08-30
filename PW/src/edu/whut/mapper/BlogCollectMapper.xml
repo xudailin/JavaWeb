@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogCollectDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="BlogCollect" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="url" column="url"/>
+		<result property="user_id" column="user_id"/>
+		<result property="blog_id" column="blog_id"/>
+	</resultMap>
+	
+	<select id="getBlogCollectsByBId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select * 
+		from sys_blog_collect c
+		where c.blog_id=#{id}
+	</select>
+	
+	<select id="getCollectNumByBId" resultType="Integer" parameterType="java.lang.Long">
+		select count(*) 
+		from sys_blog_collect c
+		where c.blog_id=#{id}
+	</select>
+	<insert id="insertBlogCollect" parameterType="BlogCollect">
+		insert into 
+		sys_blog_collect(id,user_id,blog_id) 
+		values(#{id},#{user_id},#{blog_id})
+	</insert>
+	<delete id="deleteBlogCollect" parameterType="BlogCollect">
+		delete from sys_blog_collect where user_id=#{user_id} and blog_id=#{blog_id};
+	</delete>
+	<update id="updateBlogCollectNum" parameterType="Blog">
+		update sys_blog 
+		set collectNum=#{collectNum}
+		where id=#{id}
+	</update>
+</mapper>

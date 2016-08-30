@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogTypeDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="BlogType" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="BIGINT"/>
+		<result column="typename" property="typename" jdbcType="VARCHAR"/>
+		<collection property="blogs" ofType="Blog">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="content" property="content"/>
+			<result column="publishtime" property="publishtime" jdbcType="TIMESTAMP"/>
+			<result column="readtimes" property="readtimes" jdbcType="INTEGER"/>
+			<result column="user_id" property="user_id" jdbcType="BIGINT"/>
+			<result column="type_id" property="type_id" jdbcType="BIGINT"/>		
+		</collection>
+	</resultMap>
+	
+	<select id="getAllBlogTypes" resultMap="BaseResultMap">
+	select * from sys_blog_type
+	</select>
+	
+	<select id="getBlogTypeByTypeName" parameterType="java.lang.String" resultType="BlogType">
+	select * from sys_blog_type where typename=#{typename}
+	</select>
+	
+	<insert id="insertBlogType" parameterType="BlogType">
+	insert into sys_blog_type(id,typename) values(#{id},#{typename})
+	</insert>
+	
+	<delete id="deleteBlogTypeById" parameterType="java.lang.Long">
+	delete from sys_blog_type where id=#{id}
+	</delete>
+	
+	<select id="getBlogTypeById" parameterType="java.lang.Long" resultType="BlogType">
+	select * from sys_blog_type where id=#{id}
+	</select>
+	
+	<insert id="updateBlogType" parameterType="BlogType">
+	update sys_blog_type set typename= #{typename} where id = #{id}
+	</insert>
+	
+</mapper>

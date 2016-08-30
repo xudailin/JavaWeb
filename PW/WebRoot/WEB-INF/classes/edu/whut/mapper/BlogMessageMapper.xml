@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogMessageDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="BlogMessage" id="BaseResultMap">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="leaver_id" column="leaver_id" jdbcType="BIGINT"/>
+		<result property="receiver_id" column="receiver_id" jdbcType="BIGINT"/>
+		<result property="mcontent" column="mcontent"/>
+		<result property="writetime" column="writetime" jdbcType="TIMESTAMP"/>
+		<result property="state" column="state" jdbcType="TINYINT"/>
+		<result property="root_id" column="root_id" jdbcType="BIGINT"/>
+		<result property="super_id" column="super_id" jdbcType="BIGINT"/>
+		<association property="leaver" javaType="User">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+		</association>
+		<association property="receiver" javaType="User">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+		</association>
+	</resultMap>
+
+	<select id="findPageBlogMessageList" parameterType="edu.whut.util.PageInfo" resultMap="BaseResultMap">
+		select *
+		from sys_leavemsg l 
+		left join sys_user u on l.leaver_id=u.id
+		where l.receiver_id=#{condition.id} and l.leaver_id!=#{condition.id}
+			<if test="condition.starttime != null and condition.starttime != ''">
+			<![CDATA[
+            and l.writetime >= #{condition.starttime}
+          	]]>
+			</if>
+			<if test="condition.endtime != null and condition.endtime != ''">
+			<![CDATA[
+            and l.writetime <= #{condition.endtime}
+          	]]>
+			</if>
+			order by l.writetime desc
+			LIMIT #{from}, #{size}	
+	</select>
+	
+	<select id="findBlogMessageCount" parameterType="edu.whut.util.PageInfo" resultType="Integer" >
+			select count(*)
+			from sys_leavemsg l 
+			left join sys_user u on l.leaver_id=u.id
+			where l.receiver_id=#{condition.id} and l.leaver_id!=#{condition.id}
+			<if test="condition.starttime != null and condition.starttime != ''">
+				<![CDATA[
+            	and l.writetime >= #{condition.starttime}
+          		]]>
+				</if>
+				<if test="condition.endtime != null and condition.endtime != ''">
+				<![CDATA[
+            	and l.writetime <= #{condition.endtime}
+          		]]>
+			</if>
+	</select>
+	<select id="findBlogMessageById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * 
+		from sys_leavemsg l
+		left join sys_user u on l.leaver_id=u.id
+		where l.id=#{id}
+	</select>
+	<select id="getMessagesByRootId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * 
+		from sys_leavemsg l
+		left join sys_user u on l.leaver_id=u.id
+		where l.root_id=#{id}
+		order by l.writetime asc
+	</select>
+	<delete id="deleteMessage" parameterType="java.lang.Long">
+		delete from sys_leavemsg where id=#{id}
+	</delete>
+	<update id="updateMessageState" parameterType="java.lang.Long">
+		update sys_leavemsg set state = 0 where id=#{id}
+	</update>
+	<insert id="insertMessage" parameterType="BlogMessage">
+		insert into sys_leavemsg(id,leaver_id,receiver_id,mcontent,root_id,super_id,writetime,state) 
+		values(#{id},#{leaver_id},#{receiver_id},#{mcontent},#{root_id},#{super_id},#{writetime},#{state})
+	</insert>
+</mapper>

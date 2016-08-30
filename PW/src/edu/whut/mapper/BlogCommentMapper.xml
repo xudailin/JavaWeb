@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogCommentDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="BlogComment" id="BaseResultMap">
+		<id property="id" column="id" jdbcType="BIGINT"/>
+		<result property="commenter_id" column="commenter_id" jdbcType="BIGINT"/>
+		<result property="blog_id" column="blog_id" jdbcType="BIGINT"/>
+		<result property="comcontent" column="comcontent"/>
+		<result property="cmttime" column="cmttime" jdbcType="TIMESTAMP"/>
+		<result property="state" column="state" jdbcType="TINYINT"/>
+		<result property="root_id" column="root_id" jdbcType="BIGINT"/>
+		<result property="super_id" column="super_id" jdbcType="BIGINT"/>
+		
+		<association property="commenter" javaType="User">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+			<result column="password" property="password" jdbcType="VARCHAR" />
+			<result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="emailpwd" property="emailpwd" jdbcType="VARCHAR" />
+			<result column="sex" property="sex" jdbcType="TINYINT" />
+			<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+			<result column="marriage" property="marriage" jdbcType="TINYINT" />
+			<result column="phone" property="phone" jdbcType="VARCHAR" />
+			<result column="profession" property="profession" jdbcType="VARCHAR" />
+			<result column="presentaddress" property="presentaddress" jdbcType="VARCHAR" />
+			<result column="hometown" property="hometown" jdbcType="VARCHAR" />
+			<result column="experience" property="experience" jdbcType="VARCHAR" />
+			<result column="introduce" property="introduce" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+			<result column="followers" property="followers" jdbcType="INTEGER" />
+			<result column="following" property="following" jdbcType="INTEGER" />
+			<result column="posts" property="posts" jdbcType="INTEGER" />
+		</association>
+		
+		<association property="blog" javaType="Blog">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="title" property="title"/>
+			<result column="content" property="content"/>
+			<result column="publishtime" property="publishtime" jdbcType="TIMESTAMP"/>
+			<result column="readtimes" property="readtimes" jdbcType="INTEGER"/>
+			<result column="user_id" property="user_id" jdbcType="BIGINT"/>
+			<result column="type_id" property="type_id" jdbcType="BIGINT"/>
+			<association property="user" javaType="User" >
+				<id column="id" property="id" jdbcType="BIGINT"/>
+				<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+				<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			</association>
+			<association property="blogType" javaType="BlogType" >
+				<id column="id" property="id" jdbcType="BIGINT"/>
+				<result column="typename" property="typename" jdbcType="VARCHAR"/>	
+			</association>
+		</association>
+		</resultMap>
+		
+		<select id="findPageBlogCommentList" resultMap="BaseResultMap" parameterType="edu.whut.util.PageInfo">
+			select *
+			from sys_blog_comment c 
+			left join sys_user u on c.commenter_id=u.id 
+			left join sys_blog b on c.blog_id=b.id 
+			where b.user_id=#{condition.id} and c.commenter_id!=#{condition.id}
+				<if test="condition.starttime != null and condition.starttime != ''">
+				<![CDATA[
+            	and c.cmttime >= #{condition.starttime}
+          		]]>
+				</if>
+				<if test="condition.endtime != null and condition.endtime != ''">
+				<![CDATA[
+            	and c.cmttime <= #{condition.endtime}
+          		]]>
+				</if>
+			order by c.cmttime desc
+			LIMIT #{from}, #{size}		
+		</select>
+		<select id="findBlogCommentCount" resultType="Integer" parameterType="edu.whut.util.PageInfo">
+			select count(*)
+			from sys_blog_comment c 
+			left join sys_user u on c.commenter_id=u.id 
+			left join sys_blog b on c.blog_id=b.id
+			where b.user_id=#{condition.id} and c.commenter_id!=#{condition.id}
+			<if test="condition.starttime != null and condition.starttime != ''">
+				<![CDATA[
+            	and c.cmttime >= #{condition.starttime}
+          		]]>
+				</if>
+				<if test="condition.endtime != null and condition.endtime != ''">
+				<![CDATA[
+            	and c.cmttime <= #{condition.endtime}
+          		]]>
+			</if>
+		</select>
+		<select id="findBlogCommentById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+			select c.*,u.*,b.*
+			from sys_blog_comment c 
+			left join sys_user u on c.commenter_id=u.id 
+			left join sys_blog b on c.blog_id=b.id 
+			where c.id=#{id}
+		</select>
+		<select id="findCommentsByRootId" resultMap="BaseResultMap" parameterType="BlogComment">
+			select *
+			from sys_blog_comment c 
+			left join sys_user u on c.commenter_id=u.id 
+			left join sys_blog b on c.blog_id=b.id 
+			where c.blog_id=#{blog_id} and c.root_id=#{root_id}
+			order by c.cmttime asc
+		</select>
+		<select id="findSuperCommentById" resultType="BlogComment" parameterType="java.lang.Long">
+			select *
+			from sys_blog_comment c
+			where c.id=#{id}
+		</select>
+		<select id="findCommenterById" resultType="User" parameterType="java.lang.Long">
+			select *
+			from sys_user 
+			where id=#{id}
+		</select>
+		<select id="findCommentsByBlogId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+			select *
+			from sys_blog_comment c 
+			left join sys_user u on c.commenter_id=u.id 
+			left join sys_blog b on c.blog_id=b.id 
+			where c.blog_id=#{blog_id}
+			order by c.cmttime asc
+		</select>
+		<update id="updateCommentStateById" parameterType="java.lang.Long">
+			update sys_blog_comment set state = 0 where id=#{id}
+		</update>
+		<delete id="deleteCommentById" parameterType="java.lang.Long">
+			delete from sys_blog_comment
+			where id=#{id}
+		</delete>
+		<insert id="insertComment" parameterType="BlogComment">
+			insert into sys_blog_comment(id,commenter_id,blog_id,comcontent,root_id,super_id,cmttime,state) 
+			values(#{id},#{commenter_id},#{blog_id},#{comcontent},#{root_id},#{super_id},#{cmttime},#{state})
+		</insert>
+	
+</mapper>

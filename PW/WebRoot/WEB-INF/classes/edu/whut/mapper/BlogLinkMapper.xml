@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.whut.dao.BlogLinkDao">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	<resultMap type="BlogLink" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="url" column="url"/>
+		<result property="linkname" column="linkname"/>
+		<result property="state" column="state"/>
+		<result property="user_id" column="user_id"/>
+		<association property="user" javaType="User">
+			<id column="id" property="id" jdbcType="BIGINT"/>
+			<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+			<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+			<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+			<result column="status" property="status" jdbcType="TINYINT" />
+		</association>
+	</resultMap>
+	
+	<select id="getAllBlogLinks" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select * 
+		from sys_blog_link l
+		left join sys_user u on l.user_id=u.id
+		where l.user_id=#{id}
+	</select>
+	
+	<select id="getBlogLinksAvailable" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select * 
+		from sys_blog_link l
+		left join sys_user u on l.user_id=u.id
+		where l.user_id=#{id} and l.state=0
+	</select>
+	
+	<select id="getLinkById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * 
+		from sys_blog_link l
+		left join sys_user u on l.user_id=u.id
+		where l.id=#{id}
+	</select>
+	
+	<delete id="deleteLink" parameterType="java.lang.Long">
+		delete from sys_blog_link where id=#{id}
+	</delete>
+	
+	<insert id="insertBlogLink" parameterType="BlogLink">
+		insert into 
+		sys_blog_link(id,url,linkname,state,user_id) 
+		values(#{id},#{url},#{linkname},#{state},#{user_id})
+	</insert>
+	
+	<update id="updateBlogLink" parameterType="BlogLink">
+		update sys_blog_link set linkname=#{linkname},url=#{url} where id=#{id}
+	</update>
+</mapper>

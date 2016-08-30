@@ -1,0 +1,59 @@
+/* CSS Document */
+
+#Title{
+   background:url(../images/main_04.gif) center;
+   width:auto;
+   height:50px;
+ 
+}
+
+.redFont{
+   color:#FF3300;
+}
+
+.greenFont{
+   color:#009933;
+   font-size:12px;
+}
+
+.focusInput{
+   border:solid #FF3300 1px;
+}
+
+.blurInput{
+   border-color:#009900;
+   background-color:#FFFFFF;
+}
+
+.hintColor{
+   color:#FF3300;
+   font-weight:bold;
+   font-size:12px;
+}
+.STYLE2 {
+	color: #FFFFFF;
+	font-size: 36px;
+}
+.STYLE3 {color: #FFFFFF}
+.STYLE4 {
+	font-size: 12px;
+
+}
+.STYLE5 {
+	font-size: 15px;
+	font-weight: bold;
+}
+.STYLE6{
+font-size: 15px; color: #006600;
+	margin-left:100px;
+}
+.STYLE11 {color: #FF0000}
+.STYLE12 {	color: #003300;
+	font-weight: bold;
+}
+.STYLE13 {
+	font-size: 14px;
+	color: #000000;
+	font-weight:normal;
+	
+}
